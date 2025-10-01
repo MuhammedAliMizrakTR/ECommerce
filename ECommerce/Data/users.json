@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "Username": "admin",
+    "Password": "admin123",
+    "Email": "admin@ecommerce.com",
+    "FullName": "Admin User",
+    "Role": 1,
+    "CreatedAt": "2025-10-01T16:39:09.2546777+03:00"
+  },
+  {
+    "Id": 2,
+    "Username": "Mahmut",
+    "Password": "123",
+    "Email": "m@m.com",
+    "FullName": "Mahmut Yava\u015F",
+    "Role": 0,
+    "CreatedAt": "2025-10-01T17:15:35.9333629+03:00"
+  }
+]

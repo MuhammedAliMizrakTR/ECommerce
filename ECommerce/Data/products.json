@@ -1,0 +1,32 @@
+[
+  {
+    "Id": 1,
+    "Name": "Laptop",
+    "Description": "G\u00FC\u00E7l\u00FC ve h\u0131zl\u0131 laptop",
+    "Price": 15000,
+    "Stock": 9,
+    "ImageUrl": "/uploads/984b50cb-082a-4733-944d-9a8ca61fcb8a_images.jpg",
+    "Category": "Elektronik",
+    "CreatedAt": "2025-10-01T16:39:09"
+  },
+  {
+    "Id": 2,
+    "Name": "Telefon",
+    "Description": "Ak\u0131ll\u0131 telefon",
+    "Price": 8000,
+    "Stock": 19,
+    "ImageUrl": "/uploads/7ef4907c-fb67-4052-a050-5410a84dd97b_iphone-17-pro-witb-cosmicorange-202509_FMT_WHH.jpg",
+    "Category": "Elektronik",
+    "CreatedAt": "2025-10-01T16:39:09"
+  },
+  {
+    "Id": 3,
+    "Name": "Kulakl\u0131k",
+    "Description": "Kablosuz kulakl\u0131k",
+    "Price": 500,
+    "Stock": 50,
+    "ImageUrl": "/uploads/59b1c765-a726-4259-aa28-416406956fd5_indir.jpg",
+    "Category": "Aksesuar",
+    "CreatedAt": "2025-10-01T16:39:09"
+  }
+]

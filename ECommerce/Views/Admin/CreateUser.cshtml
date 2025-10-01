@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Yeni Kullanıcı Ekle";
+}
+
+<h1 class="mb-4">
+    <i class="fas fa-user-plus"></i> Yeni Kullanıcı/Admin Ekle
+</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <form method="post" asp-action="CreateUser">
+                    <div class="mb-3">
+                        <label class="form-label">Ad Soyad</label>
+                        <input type="text" name="FullName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" name="Email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kullanıcı Adı</label>
+                        <input type="text" name="Username" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" name="Password" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Rol</label>
+                        <select name="role" class="form-select" required>
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Kaydet
+                        </button>
+                        <a asp-action="Users" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> Bilgi</h5>
+            <p>Bu panel sadece Admin kullanıcıları tarafından erişilebilir.</p>
+            <p>Buradan hem normal kullanıcı hem de admin hesabı oluşturabilirsiniz.</p>
+        </div>
+    </div>
+</div>
+

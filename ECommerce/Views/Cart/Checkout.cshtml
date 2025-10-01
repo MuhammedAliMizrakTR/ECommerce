@@ -1,0 +1,108 @@
+﻿@model ECommerce.Models.Cart
+@{
+    ViewData["Title"] = "Ödeme";
+}
+
+<h1 class="mb-4">
+    <i class="fas fa-credit-card"></i> Ödeme
+</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-credit-card"></i> Kredi Kartı Bilgileri</h5>
+            </div>
+
+
+                <form asp-action="ProcessPayment" method="post" id="paymentForm">
+                    <div class="mb-3">
+                        <label class="form-label">Kart Üzerindeki İsim</label>
+                        <input type="text" name="cardName" class="form-control" placeholder="AD SOYAD" value="TEST KULLANICI" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kart Numarası</label>
+                        <input type="text" name="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" value="1234 5678 9012 3456" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Son Kullanma Tarihi</label>
+                            <input type="text" name="expiryDate" class="form-control" placeholder="AA/YY" maxlength="5" value="12/25" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CVV</label>
+                            <input type="text" name="cvv" class="form-control" placeholder="123" maxlength="3" value="123" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                        <i class="fas fa-lock"></i> Ödemeyi Tamamla (@Model.TotalPrice.ToString("C2"))
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-shield-alt"></i> Güvenli Ödeme
+            </div>
+            <div class="card-body">
+                <p class="mb-0 text-muted">
+                    <i class="fas fa-check-circle text-success"></i> 256-bit SSL şifreleme ile korunmaktadır<br>
+                    <i class="fas fa-check-circle text-success"></i> PCI-DSS uyumlu ödeme sistemi<br>
+                    <i class="fas fa-check-circle text-success"></i> 3D Secure ile güvenli alışveriş
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Sipariş Özeti</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="mb-3">Ürünler:</h6>
+                @foreach (var item in Model.Items)
+                {
+                    <div class="d-flex justify-content-between mb-2">
+                        <small>@item.ProductName x @item.Quantity</small>
+                        <small>@item.TotalPrice.ToString("C2")</small>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Ara Toplam:</span>
+                    <strong>@Model.TotalPrice.ToString("C2")</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>KDV (%20):</span>
+                    <strong>@((Model.TotalPrice * 0.20m).ToString("C2"))</strong>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between">
+                    <h5>Toplam:</h5>
+                    <h5 class="text-success">@((Model.TotalPrice * 1.20m).ToString("C2"))</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <small class="text-muted">
+                    <i class="fas fa-truck"></i> <strong>Kargo:</strong> 1-3 iş günü<br>
+                    <i class="fas fa-undo"></i> <strong>İade:</strong> 14 gün içinde ücretsiz iade
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            if (!confirm('Ödemeyi onaylıyor musunuz?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

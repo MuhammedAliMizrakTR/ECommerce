@@ -1,0 +1,54 @@
+﻿@model ECommerce.Models.User
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-user-plus"></i> Kullanıcı Kayıt
+                </h2>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <form method="post" asp-action="Register">
+                    <div class="mb-3">
+                        <label class="form-label">Ad Soyad</label>
+                        <input type="text" name="FullName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">E-posta</label>
+                        <input type="email" name="Email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Kullanıcı Adı</label>
+                        <input type="text" name="Username" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" name="Password" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-success w-100 mb-3">
+                        <i class="fas fa-check"></i> Kayıt Ol
+                    </button>
+                </form>
+
+                <hr />
+
+                <div class="text-center">
+                    <p>Zaten hesabınız var mı?</p>
+                    <a asp-action="Login" class="btn btn-outline-primary">
+                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

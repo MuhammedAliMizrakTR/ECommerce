@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-user-circle"></i> Giriş Yap
+                </h2>
+
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.Error
+                    </div>
+                }
+
+                <form method="post" asp-action="Login">
+                    <div class="mb-3">
+                        <label class="form-label">Kullanıcı Adı</label>
+                        <input type="text" name="username" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Şifre</label>
+                        <input type="password" name="password" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mb-3">
+                        <i class="fas fa-sign-in-alt"></i> Giriş Yap
+                    </button>
+                </form>
+
+                <hr />
+
+                <div class="text-center">
+                    <p>Hesabınız yok mu?</p>
+                    <a asp-action="Register" class="btn btn-outline-success">
+                        <i class="fas fa-user-plus"></i> Kayıt Ol
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

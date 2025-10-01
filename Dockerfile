@@ -3,17 +3,19 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Proje dosyalarını kopyala
-COPY ["Ecommerce.csproj", "./"]
-RUN dotnet restore "Ecommerce.csproj"
+COPY ["Ecommerce/Ecommerce.csproj", "Ecommerce/"]
+RUN dotnet restore "Ecommerce/Ecommerce.csproj"
 
 # Tüm kaynak kodları kopyala
 COPY . .
 
 # Projeyi build et
+WORKDIR /src/Ecommerce
 RUN dotnet build "Ecommerce.csproj" -c Release -o /app/build
 
 # Publish aşaması
 FROM build AS publish
+WORKDIR /src/Ecommerce
 RUN dotnet publish "Ecommerce.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime aşaması
@@ -33,6 +35,10 @@ ENV ASPNETCORE_URLS=http://+:${PORT:-5000}
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Port'u expose et (Render dinamik port atar)
+EXPOSE ${PORT:-5000}
+
+# Uygulamayı başlat
+ENTRYPOINT ["dotnet", "Ecommerce.dll"]
 EXPOSE ${PORT:-5000}
 
 # Uygulamayı başlat

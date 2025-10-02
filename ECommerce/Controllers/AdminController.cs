@@ -21,7 +21,7 @@ namespace ECommerce.Controllers
             return role == "Admin";
         }
 
-        // Dashboard
+        
         public IActionResult Index()
         {
             if (!IsAdmin())
@@ -33,10 +33,14 @@ namespace ECommerce.Controllers
             ViewBag.UserCount = _dataService.GetUsers().Count;
             ViewBag.OrderCount = _dataService.GetOrders().Count;
 
+            var orders = _dataService.GetOrders();
+            ViewBag.TotalRevenue = orders.Sum(o => o.TotalAmount);
+
             return View();
         }
 
-        // Product Management
+        
+
         public IActionResult Products()
         {
             if (!IsAdmin())
@@ -66,7 +70,7 @@ namespace ECommerce.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            // Resim yükleme
+            
             if (imageFile != null && imageFile.Length > 0)
             {
                 var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
@@ -125,10 +129,10 @@ namespace ECommerce.Controllers
                 return NotFound();
             }
 
-            // Yeni resim yüklendiyse
+            
             if (imageFile != null && imageFile.Length > 0)
             {
-                // Eski resmi sil (eğer default değilse)
+                
                 if (!string.IsNullOrEmpty(existingProduct.ImageUrl) &&
                     existingProduct.ImageUrl != "/uploads/no-image.jpg" &&
                     existingProduct.ImageUrl.StartsWith("/uploads/"))
@@ -158,7 +162,7 @@ namespace ECommerce.Controllers
             }
             else
             {
-                // Resim değişmedi, eskisini koru
+                
                 product.ImageUrl = existingProduct.ImageUrl;
             }
 
@@ -178,7 +182,7 @@ namespace ECommerce.Controllers
             var product = _dataService.GetProductById(id);
             if (product != null)
             {
-                // Resmi sil (eğer default değilse)
+                
                 if (!string.IsNullOrEmpty(product.ImageUrl) &&
                     product.ImageUrl != "/uploads/no-image.jpg" &&
                     product.ImageUrl.StartsWith("/uploads/"))
@@ -196,7 +200,82 @@ namespace ECommerce.Controllers
             return RedirectToAction("Products");
         }
 
-        // User Management
+        
+
+        public IActionResult Orders()
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var orders = _dataService.GetOrders().OrderByDescending(o => o.OrderDate).ToList();
+
+            
+            foreach (var order in orders)
+            {
+                var user = _dataService.GetUserById(order.UserId);
+                ViewData[$"User_{order.UserId}"] = user?.FullName ?? "Bilinmeyen Kullanıcı";
+            }
+
+            return View(orders);
+        }
+
+        [HttpGet]
+        public IActionResult OrderDetail(int id)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var order = _dataService.GetOrderById(id);
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            var user = _dataService.GetUserById(order.UserId);
+            ViewBag.UserName = user?.FullName ?? "Bilinmeyen Kullanıcı";
+            ViewBag.UserEmail = user?.Email ?? "";
+
+            return View(order);
+        }
+
+        [HttpPost]
+        public IActionResult UpdateOrderStatus(int id, string status)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var order = _dataService.GetOrderById(id);
+            if (order != null)
+            {
+                order.Status = status;
+                _dataService.UpdateOrder(order);
+                TempData["Success"] = "Sipariş durumu güncellendi!";
+            }
+
+            return RedirectToAction("OrderDetail", new { id });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteOrder(int id)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            _dataService.DeleteOrder(id);
+            TempData["Success"] = "Sipariş başarıyla silindi!";
+            return RedirectToAction("Orders");
+        }
+
+        
+
         public IActionResult Users()
         {
             if (!IsAdmin())
@@ -230,13 +309,146 @@ namespace ECommerce.Controllers
             if (existingUser != null)
             {
                 ViewBag.Error = "Bu kullanıcı adı zaten kullanılıyor!";
-                return View();
+                return View(user);
             }
 
             user.Role = role == "Admin" ? UserRole.Admin : UserRole.User;
             _dataService.AddUser(user);
 
             TempData["Success"] = "Kullanıcı başarıyla eklendi!";
+            return RedirectToAction("Users");
+        }
+
+        [HttpGet]
+        public IActionResult EditUser(int id)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _dataService.GetUserById(id);
+            if (user == null)
+            {
+                TempData["Error"] = "Kullanıcı bulunamadı!";
+                return RedirectToAction("Users");
+            }
+
+            
+            user.Password = string.Empty;
+
+            return View(user);
+        }
+
+       
+        [HttpPost]
+        public IActionResult EditUser(User user, string role)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var existingUser = _dataService.GetUserById(user.Id);
+            if (existingUser == null)
+            {
+                TempData["Error"] = "Kullanıcı bulunamadı!";
+                return RedirectToAction("Users");
+            }
+
+            
+            if (!ModelState.IsValid)
+            {
+                
+                user.Password = string.Empty;
+                return View(user);
+            }
+
+            
+            if (existingUser.Username != user.Username)
+            {
+                var duplicateUser = _dataService.GetUserByUsername(user.Username);
+                if (duplicateUser != null)
+                {
+                    ViewBag.Error = "Bu kullanıcı adı zaten kullanılıyor!";
+                    user.Password = string.Empty; 
+                    user.Role = existingUser.Role; 
+                    return View(user);
+                }
+            }
+
+            
+            UserRole newRole = role == "Admin" ? UserRole.Admin : UserRole.User;
+            user.Role = newRole;
+
+            
+            var allUsers = _dataService.GetUsers();
+            var adminCount = allUsers.Count(u => u.Role == UserRole.Admin);
+
+            
+            if (existingUser.Role == UserRole.Admin && user.Role == UserRole.User && adminCount <= 1)
+            {
+                ViewBag.Error = "Sistemdeki son admin kullanıcının rolünü 'Kullanıcı' yapamazsınız! Sistemde en az bir admin olmalıdır.";
+
+                
+                user.Password = string.Empty;
+                user.Role = existingUser.Role;
+                return View(user);
+            }
+
+            
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                user.Password = existingUser.Password;
+            }
+
+            
+            user.CreatedAt = existingUser.CreatedAt;
+
+            
+            _dataService.UpdateUser(user);
+
+            TempData["Success"] = "Kullanıcı başarıyla güncellendi!";
+            return RedirectToAction("Users");
+        }
+
+
+        [HttpPost]
+        public IActionResult DeleteUser(int id)
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var user = _dataService.GetUserById(id);
+            if (user == null)
+            {
+                TempData["Error"] = "Kullanıcı bulunamadı!";
+                return RedirectToAction("Users");
+            }
+
+            
+            var allUsers = _dataService.GetUsers();
+            var adminCount = allUsers.Count(u => u.Role == UserRole.Admin);
+
+            
+            if (user.Role == UserRole.Admin && adminCount <= 1)
+            {
+                TempData["Error"] = "Son admin kullanıcıyı silemezsiniz! Sistemde en az bir admin olmalıdır.";
+                return RedirectToAction("Users");
+            }
+
+            
+            var currentUserId = HttpContext.Session.GetInt32("UserId");
+            if (currentUserId == id)
+            {
+                TempData["Error"] = "Kendi hesabınızı silemezsiniz!";
+                return RedirectToAction("Users");
+            }
+
+            _dataService.DeleteUser(id);
+            TempData["Success"] = "Kullanıcı başarıyla silindi!";
             return RedirectToAction("Users");
         }
     }

@@ -1,0 +1,99 @@
+﻿@model ECommerce.Models.Order
+
+@{
+    ViewData["Title"] = "Sipariş Detayı";
+    // AdminController'da ViewData ile gönderilen kullanıcı adı ve e-posta
+    var userName = ViewBag.UserName as string;
+    var userEmail = ViewBag.UserEmail as string;
+    var status = Model.Status;
+    var statusClass = status switch
+    {
+        "Completed" => "badge-success",
+        "Processing" => "badge-warning",
+        "Shipped" => "badge-info",
+        "Cancelled" => "badge-danger",
+        _ => "badge-secondary"
+    };
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-shopping-bag"></i> Sipariş Detayı: #@Model.Id</h2>
+        <span class="badge @statusClass" style="font-size: 1rem;">@status</span>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Başarılı!</strong> @TempData["Success"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <div class="row">
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Genel Bilgiler</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Sipariş No:</strong> #@Model.Id</p>
+                    <p><strong>Kullanıcı Adı:</strong> <span class="badge badge-light">@userName</span></p>
+                    <p><strong>Kullanıcı E-posta:</strong> @userEmail</p>
+                    <p><strong>Sipariş Tarihi:</strong> @Model.OrderDate.ToString("dd MMMM yyyy HH:mm")</p>
+                    <hr>
+                    <p class="h4 text-right"><strong>Toplam Tutar:</strong> <span class="text-danger">@Model.TotalAmount.ToString("C")</span></p>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm mt-3">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-truck"></i> Durum</h5>
+                </div>
+                <div class="card-body">
+                    <h5>Sipariş Tamamlandı</h5>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-list-ul"></i> Sipariş İçeriği</h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var item in Model.Items)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">@item.ProductName</h6>
+                                    <small class="text-muted">Ürün ID: @item.ProductId</small>
+                                </div>
+                                <span class="text-nowrap">
+                                    @item.Quantity Adet x @item.Price = <strong>@(item.Price * item.Quantity)</strong>
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer text-right">
+                    <h5>Genel Toplam: <span class="text-danger">@Model.TotalAmount.ToString("C")</span></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a asp-action="Orders" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Sipariş Listesine Dön</a>
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

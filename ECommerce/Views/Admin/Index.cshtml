@@ -7,7 +7,7 @@
 </h1>
 
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-white bg-primary">
             <div class="card-body">
                 <h5 class="card-title">
@@ -17,7 +17,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-white bg-success">
             <div class="card-body">
                 <h5 class="card-title">
@@ -27,7 +27,7 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card text-white bg-info">
             <div class="card-body">
                 <h5 class="card-title">
@@ -37,10 +37,20 @@
             </div>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-money-bill-wave"></i> Toplam Gelir
+                </h5>
+                <h2>@ViewBag.TotalRevenue.ToString("C2")</h2>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6 mb-4">
+    <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-header bg-dark text-white">
                 <i class="fas fa-box"></i> Ürün Yönetimi
@@ -53,15 +63,28 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 mb-4">
+    <div class="col-md-4 mb-4">
         <div class="card">
             <div class="card-header bg-dark text-white">
                 <i class="fas fa-users"></i> Kullanıcı Yönetimi
             </div>
             <div class="card-body">
-                <p>Kullanıcıları görüntüleyin ve yeni kullanıcı/admin ekleyin.</p>
+                <p>Kullanıcıları görüntüleyin, ekleyin, düzenleyin veya silin.</p>
                 <a asp-action="Users" class="btn btn-success">
                     <i class="fas fa-arrow-right"></i> Kullanıcılara Git
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <i class="fas fa-shopping-cart"></i> Sipariş Yönetimi
+            </div>
+            <div class="card-body">
+                <p>Siparişleri görüntüleyin, durumlarını güncelleyin veya silin.</p>
+                <a asp-action="Orders" class="btn btn-info">
+                    <i class="fas fa-arrow-right"></i> Siparişlere Git
                 </a>
             </div>
         </div>

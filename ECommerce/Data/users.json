@@ -10,10 +10,10 @@
   },
   {
     "Id": 2,
-    "Username": "Mahmut",
+    "Username": "MahmutH",
     "Password": "123",
-    "Email": "m@m.com",
-    "FullName": "Mahmut Yava\u015F",
+    "Email": "ma@ma.com",
+    "FullName": "Mahmut H\u0131zl\u0131",
     "Role": 0,
     "CreatedAt": "2025-10-01T17:15:35.9333629+03:00"
   }

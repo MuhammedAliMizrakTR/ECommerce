@@ -1,0 +1,103 @@
+﻿@model ECommerce.Models.User
+
+@{
+    ViewData["Title"] = "Kullanıcı Düzenle";
+    // Eğer rol bir Enum ise (UserRole.cs'e göre), ToString() ile string karşılığını kullanıyoruz.
+    var currentRole = Model.Role.ToString();
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            
+            <h2 class="mb-4"><i class="fas fa-user-edit"></i> Kullanıcı Düzenle: @Model.Username</h2>
+            <hr />
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Başarılı!</strong> @TempData["Success"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Hata!</strong> @TempData["Error"]
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            }
+            @if (ViewBag.Error != null)
+            {
+                <div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> @ViewBag.Error</div>
+            }
+
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Kullanıcı Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    
+                    <form asp-controller="Admin" asp-action="EditUser" method="post">
+                        
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="CreatedAt" />
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="FullName" class="form-label"><i class="fas fa-signature"></i> Tam Adı</label>
+                            <input asp-for="FullName" class="form-control" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Username" class="form-label"><i class="fas fa-user"></i> Kullanıcı Adı</label>
+                            <input asp-for="Username" class="form-control" />
+                            <small class="form-text text-muted">Kullanıcı adını değiştirmek sistem bütünlüğü açısından önerilmez. Eğer değiştirecekseniz, benzersiz olduğundan emin olun.</small>
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Email" class="form-label"><i class="fas fa-envelope"></i> E-posta</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Password" class="form-label"><i class="fas fa-lock"></i> Şifre</label>
+                            <input type="password" asp-for="Password" class="form-control" value="" placeholder="Zorunlu Alan" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <div class="form-group mb-4">
+                                <label asp-for="Role" class="form-label"><i class="fas fa-users-cog"></i> Kullanıcı Rolü</label>
+                                <select asp-for="Role" class="form-control">
+                                    <option value="@ECommerce.Models.UserRole.User">Kullanıcı</option>
+                                    <option value="@ECommerce.Models.UserRole.Admin">Admin</option>
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Users" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Kullanıcılara Dön</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Değişiklikleri Kaydet
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

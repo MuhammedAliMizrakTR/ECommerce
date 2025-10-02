@@ -25,7 +25,7 @@ namespace ECommerce.Services
 
         private void InitializeData()
         {
-            
+            // Kullanıcılar
             if (!File.Exists(_usersFile))
             {
                 var users = new List<User>
@@ -44,7 +44,7 @@ namespace ECommerce.Services
                 SaveUsers(users);
             }
 
-            
+            // Ürünler
             if (!File.Exists(_productsFile))
             {
                 var products = new List<Product>
@@ -86,14 +86,14 @@ namespace ECommerce.Services
                 SaveProducts(products);
             }
 
-            
+            // Siparişler
             if (!File.Exists(_ordersFile))
             {
                 SaveOrders(new List<Order>());
             }
         }
 
-        
+        // USERS
         public List<User> GetUsers()
         {
             var json = File.ReadAllText(_usersFile);
@@ -125,7 +125,7 @@ namespace ECommerce.Services
             SaveUsers(users);
         }
 
-        
+        // PRODUCTS
         public List<Product> GetProducts()
         {
             var json = File.ReadAllText(_productsFile);
@@ -170,7 +170,7 @@ namespace ECommerce.Services
             SaveProducts(products);
         }
 
-        
+        // ORDERS
         public List<Order> GetOrders()
         {
             var json = File.ReadAllText(_ordersFile);
@@ -183,6 +183,11 @@ namespace ECommerce.Services
             File.WriteAllText(_ordersFile, json);
         }
 
+        public Order GetOrderById(int id)
+        {
+            return GetOrders().FirstOrDefault(o => o.Id == id);
+        }
+
         public void AddOrder(Order order)
         {
             var orders = GetOrders();
@@ -190,6 +195,42 @@ namespace ECommerce.Services
             order.OrderDate = DateTime.Now;
             orders.Add(order);
             SaveOrders(orders);
+        }
+
+        public void UpdateOrder(Order order)
+        {
+            var orders = GetOrders();
+            var index = orders.FindIndex(o => o.Id == order.Id);
+            if (index != -1)
+            {
+                orders[index] = order;
+                SaveOrders(orders);
+            }
+        }
+
+        public void DeleteOrder(int id)
+        {
+            var orders = GetOrders();
+            orders.RemoveAll(o => o.Id == id);
+            SaveOrders(orders);
+        }
+
+        public void UpdateUser(User user)
+        {
+            var users = GetUsers();
+            var index = users.FindIndex(u => u.Id == user.Id);
+            if (index != -1)
+            {
+                users[index] = user;
+                SaveUsers(users);
+            }
+        }
+
+        public void DeleteUser(int id)
+        {
+            var users = GetUsers();
+            users.RemoveAll(u => u.Id == id);
+            SaveUsers(users);
         }
     }
 }

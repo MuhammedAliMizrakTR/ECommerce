@@ -19,3 +19,5 @@ COPY --from=build /app/publish ./
 
 # Uygulamayı başlat
 ENTRYPOINT ["dotnet", "ECommerce.dll"]
+
+EXPOSE 3000

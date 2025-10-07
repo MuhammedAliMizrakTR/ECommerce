@@ -1,4 +1,5 @@
 using ECommerce.Services;
+using System.Reflection.PortableExecutable;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,10 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddSingleton<JsonDataService>();
+
+builder.WebHost.UseUrls("http://*:3000");
+
+
 
 var app = builder.Build();
 
